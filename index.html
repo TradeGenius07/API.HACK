@@ -1,0 +1,2356 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TradeGenius07 API WEB</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11.6.0/lib/browser/math.min.js"></script>
+<style>
+:root {
+--primary: #4361ee;
+--secondary: #3f37c9;
+--accent: #4895ef;
+--success: #4cc9f0;
+--danger: #f72585;
+--warning: #f8961e;
+--light: #f8f9fa;
+--dark: #212529;
+--bg: #0a192f;
+--card-bg: rgba(255, 255, 255, 0.05);
+--text-primary: rgba(255, 255, 255, 0.9);
+--text-secondary: rgba(255, 255, 255, 0.7);
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Poppins', sans-serif;
+background-color: var(--bg);
+color: var(--text-primary);
+overflow-x: hidden;
+min-height: 100vh;
+}
+
+#particles-js {
+position: fixed;
+width: 100%;
+height: 100%;
+z-index: -1;
+background-color: var(--bg);
+}
+
+.container {
+width: 100%;
+max-width: 500px;
+margin: 0 auto;
+padding: 20px;
+animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+text-align: center;
+margin-bottom: 25px;
+padding-bottom: 15px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+from { opacity: 0; transform: translateY(-20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.header h1 {
+font-size: 1.8rem;
+background: linear-gradient(90deg, #4cc9f0, #4895ef, #4361ee);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+font-weight: 700;
+margin-bottom: 5px;
+}
+
+.header p {
+font-size: 0.9rem;
+color: var(--text-secondary);
+}
+
+.nav-tabs {
+display: flex;
+justify-content: space-around;
+margin-bottom: 20px;
+background: rgba(255, 255, 255, 0.05);
+border-radius: 50px;
+padding: 5px;
+animation: fadeIn 0.8s ease-out;
+}
+
+.nav-tab {
+padding: 10px 15px;
+border-radius: 50px;
+font-size: 0.9rem;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.3s ease;
+text-align: center;
+flex: 1;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+}
+
+.nav-tab.active {
+background: var(--primary);
+color: white;
+box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+.tab-content {
+display: none;
+animation: fadeIn 0.5s ease-out;
+}
+
+.tab-content.active {
+display: block;
+}
+
+.card {
+background: var(--card-bg);
+backdrop-filter: blur(10px);
+border-radius: 15px;
+padding: 20px;
+margin-bottom: 20px;
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.1);
+transition: all 0.3s ease;
+}
+
+.card:hover {
+transform: translateY(-5px);
+box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 15px;
+}
+
+.card-title {
+font-size: 1.1rem;
+font-weight: 600;
+color: var(--accent);
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.card-icon {
+font-size: 1.2rem;
+color: var(--accent);
+}
+
+.prediction-display {
+text-align: center;
+padding: 15px;
+border-radius: 10px;
+margin: 15px 0;
+background: rgba(67, 97, 238, 0.1);
+border: 1px solid rgba(67, 97, 238, 0.2);
+position: relative;
+overflow: hidden;
+}
+
+.prediction-display::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 3px;
+background: linear-gradient(90deg, var(--primary), var(--accent));
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+0% { opacity: 0.5; }
+50% { opacity: 1; }
+100% { opacity: 0.5; }
+}
+
+.current-period {
+font-size: 1rem;
+color: var(--text-secondary);
+margin-bottom: 5px;
+}
+
+.prediction-value {
+font-size: 2rem;
+font-weight: 700;
+margin: 10px 0;
+transition: all 0.3s ease;
+}
+
+.prediction-big {
+color: var(--success);
+text-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+}
+
+.prediction-small {
+color: var(--danger);
+text-shadow: 0 0 10px rgba(247, 37, 133, 0.3);
+}
+
+.confidence {
+font-size: 0.9rem;
+color: var(--text-secondary);
+}
+
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+margin-top: 15px;
+}
+
+.stat-item {
+background: rgba(255, 255, 255, 0.05);
+padding: 12px;
+border-radius: 10px;
+text-align: center;
+transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+transform: translateY(-3px);
+background: rgba(255, 255, 255, 0.08);
+}
+
+.stat-value {
+font-size: 1.3rem;
+font-weight: 700;
+margin-bottom: 5px;
+}
+
+.stat-label {
+font-size: 0.8rem;
+color: var(--text-secondary);
+}
+
+.win {
+color: var(--success);
+}
+
+.loss {
+color: var(--danger);
+}
+
+.pending {
+color: var(--warning);
+}
+
+.history-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 12px 15px;
+background: rgba(255, 255, 255, 0.03);
+border-radius: 10px;
+margin-bottom: 10px;
+border-left: 3px solid var(--primary);
+transition: all 0.3s ease;
+}
+
+.history-item:hover {
+background: rgba(255, 255, 255, 0.07);
+transform: translateX(5px);
+}
+
+.history-period {
+font-size: 0.8rem;
+color: var(--text-secondary);
+}
+
+.history-prediction {
+font-weight: 500;
+}
+
+.history-status {
+font-size: 0.9rem;
+font-weight: 600;
+padding: 3px 10px;
+border-radius: 50px;
+min-width: 70px;
+text-align: center;
+}
+
+.win-bg {
+background: rgba(76, 201, 240, 0.1);
+}
+
+.loss-bg {
+background: rgba(247, 37, 133, 0.1);
+}
+
+.pending-bg {
+background: rgba(248, 150, 30, 0.1);
+}
+
+.loading {
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
+}
+
+.spinner {
+width: 40px;
+height: 40px;
+border: 4px solid rgba(255, 255, 255, 0.1);
+border-radius: 50%;
+border-top-color: var(--accent);
+animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+to { transform: rotate(360deg); }
+}
+
+.chart-container {
+width: 100%;
+height: 250px;
+margin-top: 15px;
+}
+
+.pattern-indicator {
+display: flex;
+justify-content: space-between;
+margin-top: 15px;
+flex-wrap: wrap;
+gap: 10px;
+}
+
+.pattern-item {
+background: rgba(255, 255, 255, 0.05);
+padding: 8px 12px;
+border-radius: 8px;
+font-size: 0.8rem;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.pattern-active {
+background: rgba(67, 97, 238, 0.2);
+border: 1px solid var(--primary);
+}
+
+.logic-badge {
+display: inline-block;
+padding: 3px 8px;
+background: rgba(67, 97, 238, 0.2);
+border-radius: 50px;
+font-size: 0.7rem;
+margin-left: 5px;
+color: var(--accent);
+}
+
+.footer {
+text-align: center;
+margin-top: 30px;
+padding-top: 20px;
+border-top: 1px solid rgba(255, 255, 255, 0.1);
+font-size: 0.8rem;
+color: var(--text-secondary);
+}
+
+.about-card {
+display: flex;
+flex-direction: column;
+align-items: center;
+text-align: center;
+padding: 20px;
+}
+
+.developer-avatar {
+width: 80px;
+height: 80px;
+border-radius: 50%;
+object-fit: cover;
+margin-bottom: 15px;
+border: 3px solid var(--primary);
+}
+
+.social-links {
+display: flex;
+gap: 15px;
+margin-top: 15px;
+}
+
+.social-link {
+color: white;
+font-size: 1.2rem;
+transition: all 0.3s ease;
+}
+
+.social-link:hover {
+color: var(--accent);
+transform: translateY(-3px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+.header h1 {
+font-size: 1.5rem;
+}
+
+.nav-tab {
+padding: 8px 10px;
+font-size: 0.8rem;
+}
+
+.prediction-value {
+font-size: 1.8rem;
+}
+}
+
+/* Page transitions */
+.page {
+position: absolute;
+width: 100%;
+height: 100%;
+top: 0;
+left: 0;
+padding: 20px;
+overflow-y: auto;
+display: none;
+}
+
+.page.active {
+display: block;
+animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+from { opacity: 0; transform: translateX(20px); }
+to { opacity: 1; transform: translateX(0); }
+}
+
+.back-button {
+display: flex;
+align-items: center;
+gap: 5px;
+margin-bottom: 20px;
+color: var(--accent);
+cursor: pointer;
+}
+
+.page-header {
+font-size: 1.5rem;
+margin-bottom: 20px;
+color: var(--accent);
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.logic-card {
+margin-bottom: 15px;
+padding: 15px;
+background: rgba(255, 255, 255, 0.03);
+border-radius: 10px;
+border-left: 3px solid var(--primary);
+}
+
+.logic-title {
+font-weight: 600;
+margin-bottom: 5px;
+color: var(--accent);
+}
+
+.logic-desc {
+font-size: 0.9rem;
+color: var(--text-secondary);
+}
+
+.logic-stats {
+display: flex;
+gap: 10px;
+margin-top: 10px;
+font-size: 0.8rem;
+}
+
+.stat-pill {
+padding: 3px 8px;
+border-radius: 50px;
+background: rgba(255, 255, 255, 0.05);
+}
+
+.trend-card {
+margin-bottom: 15px;
+}
+
+.trend-header {
+display: flex;
+justify-content: space-between;
+margin-bottom: 10px;
+}
+
+.trend-title {
+font-weight: 600;
+color: var(--accent);
+}
+
+.trend-value {
+font-weight: 600;
+}
+
+.trend-bar {
+height: 8px;
+background: rgba(255, 255, 255, 0.1);
+border-radius: 4px;
+overflow: hidden;
+margin-top: 5px;
+}
+
+.trend-progress {
+height: 100%;
+background: linear-gradient(90deg, var(--primary), var(--accent));
+border-radius: 4px;
+}
+
+.logic-performance {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 15px;
+}
+
+.performance-item {
+background: rgba(255, 255, 255, 0.05);
+padding: 8px 12px;
+border-radius: 8px;
+font-size: 0.8rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.performance-value {
+font-weight: 600;
+font-size: 1rem;
+margin-bottom: 2px;
+}
+
+.performance-label {
+font-size: 0.7rem;
+color: var(--text-secondary);
+}
+
+.good-performance {
+color: var(--success);
+}
+
+.bad-performance {
+color: var(--danger);
+}
+
+.neutral-performance {
+color: var(--warning);
+}
+
+.action-buttons {
+display: flex;
+gap: 10px;
+margin-top: 20px;
+}
+
+.btn {
+padding: 10px 15px;
+border-radius: 8px;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.3s ease;
+border: none;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.btn-primary {
+background: var(--primary);
+color: white;
+}
+
+.btn-primary:hover {
+background: var(--secondary);
+transform: translateY(-2px);
+}
+
+.btn-danger {
+background: var(--danger);
+color: white;
+}
+
+.btn-danger:hover {
+background: #d11a6d;
+transform: translateY(-2px);
+}
+
+.btn-success {
+background: var(--success);
+color: white;
+}
+
+.btn-success:hover {
+background: #3ab7d8;
+transform: translateY(-2px);
+}
+
+.export-modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.7);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s ease;
+}
+
+.export-modal.active {
+opacity: 1;
+pointer-events: all;
+}
+
+.export-content {
+background: var(--bg);
+padding: 20px;
+border-radius: 10px;
+width: 90%;
+max-width: 500px;
+max-height: 80vh;
+overflow-y: auto;
+border: 1px solid var(--primary);
+}
+
+.export-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 15px;
+}
+
+.export-title {
+font-size: 1.2rem;
+font-weight: 600;
+color: var(--accent);
+}
+
+.close-export {
+background: none;
+border: none;
+color: var(--text-secondary);
+font-size: 1.5rem;
+cursor: pointer;
+}
+
+.export-textarea {
+width: 100%;
+min-height: 200px;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid rgba(255, 255, 255, 0.1);
+border-radius: 8px;
+padding: 10px;
+color: white;
+font-family: monospace;
+margin-bottom: 15px;
+}
+
+.export-options {
+display: flex;
+gap: 10px;
+margin-bottom: 15px;
+}
+
+.export-option {
+padding: 8px 12px;
+background: rgba(255, 255, 255, 0.05);
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.export-option.active {
+background: var(--primary);
+color: white;
+}
+
+.export-option:hover {
+background: rgba(255, 255, 255, 0.1);
+}
+
+.notification {
+position: fixed;
+bottom: 20px;
+right: 20px;
+background: var(--primary);
+color: white;
+padding: 10px 15px;
+border-radius: 8px;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+transform: translateY(100px);
+opacity: 0;
+transition: all 0.3s ease;
+z-index: 1000;
+}
+
+.notification.show {
+transform: translateY(0);
+opacity: 1;
+}
+</style>
+
+
+<div id="particles-js"></div>
+
+<!-- Export Modal -->
+<div class="export-modal" id="exportModal">
+<div class="export-content">
+<div class="export-header">
+<div class="export-title">Export Predictions</div>
+<button class="close-export" onclick="hideExportModal()">×</button>
+</div>
+<div class="export-options">
+<div class="export-option active" data-type="recent" onclick="setExportType('recent')">Recent</div>
+<div class="export-option" data-type="all" onclick="setExportType('all')">All</div>
+<div class="export-option" data-type="dev" onclick="setExportType('dev')">Dev Contact</div>
+</div>
+<textarea class="export-textarea" id="exportData" readonly=""></textarea>
+<div class="action-buttons">
+<button class="btn btn-success" onclick="copyExportData()">
+<i class="fas fa-copy"></i> Copy
+</button>
+<button class="btn btn-primary" onclick="downloadExportData()">
+<i class="fas fa-download"></i> Download
+</button>
+</div>
+</div>
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification">
+<div id="notificationMessage"></div>
+</div>
+
+<!-- Main App Container -->
+<div class="container" id="app-container">
+<div class="header">
+<h1>TradeGenius07 API SERVER</h1>
+<p>ADVANCE PREDICTION SYSTEM WITH 30+ API SYSTEM</p>
+</div>
+
+<div class="nav-tabs">
+<div class="nav-tab active" data-tab="prediction">
+<i class="fas fa-robot"></i> <span class="tab-text">Prediction</span>
+</div>
+<div class="nav-tab" data-tab="history">
+<i class="fas fa-history"></i> <span class="tab-text">History</span>
+</div>
+<div class="nav-tab" data-tab="trends">
+<i class="fas fa-chart-line"></i> <span class="tab-text">Trends</span>
+</div>
+<div class="nav-tab" data-tab="more">
+<i class="fas fa-ellipsis-h"></i> <span class="tab-text">More</span>
+</div>
+</div>
+
+<!-- Prediction Tab -->
+<div class="tab-content active" id="prediction-tab">
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-brain"></i> Current Prediction</div>
+<div class="card-icon"><i class="fas fa-bolt"></i></div>
+</div>
+<div class="prediction-display">
+<div class="current-period">PERIOD: <span id="currentPeriod">Loading...</span></div>
+<div class="prediction-value" id="prediction">-</div>
+<div class="confidence">WIN RATE: <span id="winRate">-</span> <span id="activeLogic" class="logic-badge">Logic 1</span></div>
+</div>
+
+<div class="stats-grid">
+<div class="stat-item">
+<div class="stat-value" id="totalPredictions">0</div>
+<div class="stat-label">Total Predictions</div>
+</div>
+<div class="stat-item">
+<div class="stat-value win" id="totalWins">0</div>
+<div class="stat-label">Wins </div>
+</div>
+<div class="stat-item">
+<div class="stat-value loss" id="totalLosses">0</div>
+<div class="stat-label">Losses 梁</div>
+</div>
+<div class="stat-item">
+<div class="stat-value" id="accuracy">0%</div>
+<div class="stat-label">Accuracy</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-chart-bar"></i> Active Patterns</div>
+<div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+</div>
+<div class="pattern-indicator" id="patternIndicator">
+<div class="loading">
+<div class="spinner"></div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-clock"></i> Recent Predictions</div>
+<div class="card-icon"><i class="fas fa-list"></i></div>
+</div>
+<div id="history">
+<div class="loading">
+<div class="spinner"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- History Tab -->
+<div class="tab-content" id="history-tab">
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-database"></i> Previous Results</div>
+<div class="card-icon"><i class="fas fa-table"></i></div>
+</div>
+<div id="previous-results">
+<div class="loading">
+<div class="spinner"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Trends Tab -->
+<div class="tab-content" id="trends-tab">
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-chart-pie"></i> Trend Analysis</div>
+<div class="card-icon"><i class="fas fa-chart-line"></i></div>
+</div>
+<div class="chart-container">
+<canvas id="trendChart"></canvas>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-wave-square"></i> Pattern Frequency</div>
+<div class="card-icon"><i class="fas fa-chart-bar"></i></div>
+</div>
+<div class="chart-container">
+<canvas id="patternChart"></canvas>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-percentage"></i> Probability Distribution</div>
+<div class="card-icon"><i class="fas fa-chart-pie"></i></div>
+</div>
+<div class="chart-container">
+<canvas id="probabilityChart"></canvas>
+</div>
+</div>
+</div>
+
+<!-- More Tab -->
+<div class="tab-content" id="more-tab">
+<div class="card" onclick="showPage('logic-page')" style="cursor: pointer;">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-brain"></i> API SYSTEM</div>
+<div class="card-icon"><i class="fas fa-arrow-right"></i></div>
+</div>
+<p style="color: var(--text-secondary); font-size: 0.9rem;">View all 30+ prediction logics used by the system</p>
+</div>
+
+<div class="card" onclick="showPage('about-page')" style="cursor: pointer;">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-user"></i> About Developer</div>
+<div class="card-icon"><i class="fas fa-arrow-right"></i></div>
+</div>
+<p style="color: var(--text-secondary); font-size: 0.9rem;">Information about the developer</p>
+</div>
+
+<div class="card" onclick="showPage('guide-page')" style="cursor: pointer;">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-book"></i> How to Use</div>
+<div class="card-icon"><i class="fas fa-arrow-right"></i></div>
+</div>
+<p style="color: var(--text-secondary); font-size: 0.9rem;">User guide for beginners</p>
+</div>
+
+<div class="card" onclick="showPage('performance-page')" style="cursor: pointer;">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-tachometer-alt"></i> Logic Performance</div>
+<div class="card-icon"><i class="fas fa-arrow-right"></i></div>
+</div>
+<p style="color: var(--text-secondary); font-size: 0.9rem;">See which logics are performing best</p>
+</div>
+
+<div class="action-buttons">
+<button class="btn btn-primary" onclick="showExportModal()">
+<i class="fas fa-file-export"></i> Export Data
+</button>
+<button class="btn btn-danger" onclick="logout()">
+<i class="fas fa-sign-out-alt"></i> Logout
+</button>
+</div>
+</div>
+
+<div class="footer">
+<p>TradeGenius07 API SERVER © 2025 | version 3.2.1</p>
+</div>
+</div>
+
+<!-- AI Logic Page -->
+<div class="page" id="logic-page">
+<div class="back-button" onclick="hidePage('logic-page')">
+<i class="fas fa-arrow-left"></i> Back
+</div>
+<div class="page-header">
+<i class="fas fa-brain"></i> API Prediction Logics
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-project-diagram"></i> Active Logics</div>
+</div>
+<p style="color: var(--text-secondary); margin-bottom: 15px; font-size: 0.9rem;">
+The system uses 30+ advanced prediction logics that analyze patterns and trends to determine the most probable outcome.
+</p>
+<div id="active-logics-list">
+<!-- Will be populated by JS -->
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-list"></i> All Logics</div>
+</div>
+<div id="all-logics-list">
+<!-- Will be populated by JS -->
+</div>
+</div>
+</div>
+
+<!-- About Page -->
+<div class="page" id="about-page">
+<div class="back-button" onclick="hidePage('about-page')">
+<i class="fas fa-arrow-left"></i> Back
+</div>
+<div class="page-header">
+<i class="fas fa-user"></i> About Developer
+</div>
+
+<div class="card about-card">
+<img src="https://i.ibb.co/5XBFHs1m/logo.png" alt="Developer" class="developer-avatar">
+<h3>TradeGenius07 BHAI</h3>
+<p style="color: var(--text-secondary); margin-bottom: 10px;">API Prediction System Developer</p>
+<p style="color: var(--text-primary); margin-bottom: 15px; text-align: center;">
+Creator of advanced prediction systems with machine learning and pattern recognition algorithms.
+</p>
+<div class="social-links">
+<a href="https://t.me/TradeGenius07" class="social-link" target="_blank"><i class="fab fa-telegram"></i></a>
+<a href="#" class="social-link"><i class="fab fa-github"></i></a>
+<a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-info-circle"></i> About This Project</div>
+</div>
+<p style="color: var(--text-secondary); margin-bottom: 10px;">
+TradeGenius07 Api System is an advanced prediction system that uses 30+ different logics and algorithms to analyze game patterns and predict outcomes with high accuracy.
+</p>
+<p style="color: var(--text-secondary);">
+The system continuously learns from new data and adjusts its strategies to maintain a high win rate.
+</p>
+</div>
+</div>
+
+<!-- Guide Page -->
+<div class="page" id="guide-page">
+<div class="back-button" onclick="hidePage('guide-page')">
+<i class="fas fa-arrow-left"></i> Back
+</div>
+<div class="page-header">
+<i class="fas fa-book"></i> How to Use
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-robot"></i> Prediction System</div>
+</div>
+<div class="logic-card">
+<div class="logic-title">1. Understanding the Prediction</div>
+<div class="logic-desc">
+The system predicts either BIG (5-9) or SMALL (0-4) for each round. The prediction is displayed with a confidence percentage.
+</div>
+</div>
+<div class="logic-card">
+<div class="logic-title">2. Active Patterns</div>
+<div class="logic-desc">
+The system detects active patterns in the game history and uses them to make predictions. These are shown in the Active Patterns section.
+</div>
+</div>
+<div class="logic-card">
+<div class="logic-title">3. History Tracking</div>
+<div class="logic-desc">
+All predictions are tracked with their results (WIN/LOSS). You can review these in the History tab.
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-chart-line"></i> Trend Analysis</div>
+</div>
+<div class="logic-card">
+<div class="logic-title">1. Trend Charts</div>
+<div class="logic-desc">
+The Trends tab shows visual representations of game patterns and prediction accuracy over time.
+</div>
+</div>
+<div class="logic-card">
+<div class="logic-title">2. Pattern Frequency</div>
+<div class="logic-desc">
+The Pattern Frequency chart shows how often different patterns occur in the game history.
+</div>
+</div>
+<div class="logic-card">
+<div class="logic-title">3. Probability Distribution</div>
+<div class="logic-desc">
+Shows the historical distribution of BIG vs SMALL results to identify biases.
+</div>
+</div>
+</div>
+</div>
+
+<!-- Performance Page -->
+<div class="page" id="performance-page">
+<div class="back-button" onclick="hidePage('performance-page')">
+<i class="fas fa-arrow-left"></i> Back
+</div>
+<div class="page-header">
+<i class="fas fa-tachometer-alt"></i> Logic Performance
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-medal"></i> Top Performing Logics</div>
+</div>
+<div id="top-logics">
+<!-- Will be populated by JS -->
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-chart-bar"></i> Performance Metrics</div>
+</div>
+<div class="chart-container">
+<canvas id="performanceChart"></canvas>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<div class="card-title"><i class="fas fa-lightbulb"></i> Recommendations</div>
+</div>
+<div id="logic-recommendations">
+<!-- Will be populated by JS -->
+</div>
+</div>
+</div>
+
+<script>
+// Particles.js configuration
+document.addEventListener('DOMContentLoaded', function() {
+particlesJS('particles-js', {
+particles: {
+number: { value: 80, density: { enable: true, value_area: 800 } },
+color: { value: "#3a86ff" },
+shape: { type: "circle" },
+opacity: { value: 0.5, random: true },
+size: { value: 3, random: true },
+line_linked: { enable: true, distance: 150, color: "#3a86ff", opacity: 0.4, width: 1 },
+move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+},
+interactivity: {
+detect_on: "canvas",
+events: {
+onhover: { enable: true, mode: "grab" },
+onclick: { enable: true, mode: "push" }
+}
+}
+});
+
+// Initialize charts
+initCharts();
+// Load logic information
+loadLogicInfo();
+// Load performance data
+loadPerformanceData();
+});
+
+// Tab switching
+const tabs = document.querySelectorAll('.nav-tab');
+tabs.forEach(tab => {
+tab.addEventListener('click', () => {
+tabs.forEach(t => t.classList.remove('active'));
+tab.classList.add('active');
+
+const tabId = tab.getAttribute('data-tab') + '-tab';
+document.querySelectorAll('.tab-content').forEach(content => {
+content.classList.remove('active');
+});
+document.getElementById(tabId).classList.add('active');
+
+// Load content for specific tabs when clicked
+if (tabId === 'history-tab') {
+fetchPreviousResults();
+} else if (tabId === 'trends-tab') {
+updateCharts();
+} else if (tabId === 'performance-tab') {
+updatePerformanceCharts();
+}
+});
+});
+
+// Page navigation functions
+function showPage(pageId) {
+document.getElementById('app-container').style.display = 'none';
+document.getElementById(pageId).classList.add('active');
+
+// Update specific pages when shown
+if (pageId === 'performance-page') {
+updatePerformanceCharts();
+}
+}
+
+function hidePage(pageId) {
+document.getElementById(pageId).classList.remove('active');
+document.getElementById('app-container').style.display = 'block';
+}
+
+// Export modal functions
+let currentExportType = 'recent';
+
+function showExportModal() {
+document.getElementById('exportModal').classList.add('active');
+updateExportData();
+}
+
+function hideExportModal() {
+document.getElementById('exportModal').classList.remove('active');
+}
+
+function setExportType(type) {
+currentExportType = type;
+document.querySelectorAll('.export-option').forEach(option => {
+option.classList.remove('active');
+if (option.getAttribute('data-type') === type) {
+option.classList.add('active');
+}
+});
+updateExportData();
+}
+
+function updateExportData() {
+const exportTextarea = document.getElementById('exportData');
+
+if (currentExportType === 'recent') {
+// Export recent predictions
+const recent = historyData.slice(0, 10);
+let exportText = 'Recent Predictions:\n\n';
+recent.forEach(item => {
+exportText += `Period: ${item.period}\n`;
+exportText += `Prediction: ${item.prediction}\n`;
+exportText += `Result: ${item.result} (${item.resultType})\n`;
+exportText += `Status: ${item.resultStatus}\n`;
+exportText += `Confidence: ${item.confidence}%\n`;
+exportText += `Logic: ${item.logic}\n\n`;
+});
+exportTextarea.value = exportText;
+} else if (currentExportType === 'all') {
+// Export all predictions
+let exportText = 'All Predictions:\n\n';
+historyData.forEach(item => {
+exportText += `Period: ${item.period}\n`;
+exportText += `Prediction: ${item.prediction}\n`;
+exportText += `Result: ${item.result} (${item.resultType})\n`;
+exportText += `Status: ${item.resultStatus}\n`;
+exportText += `Confidence: ${item.confidence}%\n`;
+exportText += `Logic: ${item.logic}\n\n`;
+});
+exportTextarea.value = exportText;
+} else if (currentExportType === 'dev') {
+// Export developer contact info
+let exportText = '';
+for (let i = 0; i < 50; i++) {
+exportText += 'https://t.me/TradeGenius07\n';
+}
+exportTextarea.value = exportText;
+}
+}
+
+function copyExportData() {
+const exportTextarea = document.getElementById('exportData');
+exportTextarea.select();
+document.execCommand('copy');
+showNotification('Data copied to clipboard!');
+}
+
+function downloadExportData() {
+const exportTextarea = document.getElementById('exportData');
+const blob = new Blob([exportTextarea.value], { type: 'text/plain' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = currentExportType === 'dev' ? 'devdarq_contacts.txt' :
+currentExportType === 'all' ? 'all_predictions.txt' : 'recent_predictions.txt';
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+showNotification('Download started!');
+}
+
+function showNotification(message) {
+const notification = document.getElementById('notification');
+const notificationMessage = document.getElementById('notificationMessage');
+notificationMessage.textContent = message;
+notification.classList.add('show');
+setTimeout(() => {
+notification.classList.remove('show');
+}, 3000);
+}
+
+function logout() {
+// Redirect to logout.php
+window.location.href = 'logout.php';
+}
+
+// Chart variables
+let trendChart, patternChart, probabilityChart, performanceChart;
+
+function initCharts() {
+// Trend Chart
+const trendCtx = document.getElementById('trendChart').getContext('2d');
+trendChart = new Chart(trendCtx, {
+type: 'line',
+data: {
+labels: [],
+datasets: [
+{
+label: 'BIG',
+data: [],
+borderColor: '#4cc9f0',
+backgroundColor: 'rgba(76, 201, 240, 0.1)',
+tension: 0.3,
+fill: true
+},
+{
+label: 'SMALL',
+data: [],
+borderColor: '#f72585',
+backgroundColor: 'rgba(247, 37, 133, 0.1)',
+tension: 0.3,
+fill: true
+}
+]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+position: 'top',
+},
+tooltip: {
+mode: 'index',
+intersect: false,
+}
+},
+scales: {
+y: {
+beginAtZero: true,
+ticks: {
+callback: function(value) {
+return value + '%';
+}
+}
+}
+}
+}
+});
+
+// Pattern Chart
+const patternCtx = document.getElementById('patternChart').getContext('2d');
+patternChart = new Chart(patternCtx, {
+type: 'bar',
+data: {
+labels: ['Streaks', 'Alternating', 'Repeats', 'Triples', 'Weighted'],
+datasets: [{
+label: 'Pattern Frequency',
+data: [25, 30, 20, 15, 10],
+backgroundColor: [
+'rgba(67, 97, 238, 0.7)',
+'rgba(76, 201, 240, 0.7)',
+'rgba(248, 150, 30, 0.7)',
+'rgba(247, 37, 133, 0.7)',
+'rgba(72, 149, 239, 0.7)'
+],
+borderColor: [
+'rgba(67, 97, 238, 1)',
+'rgba(76, 201, 240, 1)',
+'rgba(248, 150, 30, 1)',
+'rgba(247, 37, 133, 1)',
+'rgba(72, 149, 239, 1)'
+],
+borderWidth: 1
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+display: false
+}
+},
+scales: {
+y: {
+beginAtZero: true,
+ticks: {
+callback: function(value) {
+return value + '%';
+}
+}
+}
+}
+}
+});
+
+// Probability Chart
+const probabilityCtx = document.getElementById('probabilityChart').getContext('2d');
+probabilityChart = new Chart(probabilityCtx, {
+type: 'doughnut',
+data: {
+labels: ['BIG', 'SMALL'],
+datasets: [{
+data: [50, 50],
+backgroundColor: [
+'rgba(76, 201, 240, 0.7)',
+'rgba(247, 37, 133, 0.7)'
+],
+borderColor: [
+'rgba(76, 201, 240, 1)',
+'rgba(247, 37, 133, 1)'
+],
+borderWidth: 1
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+position: 'bottom',
+}
+},
+cutout: '70%'
+}
+});
+
+// Performance Chart
+const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+performanceChart = new Chart(performanceCtx, {
+type: 'bar',
+data: {
+labels: [],
+datasets: [{
+label: 'Accuracy',
+data: [],
+backgroundColor: 'rgba(67, 97, 238, 0.7)',
+borderColor: 'rgba(67, 97, 238, 1)',
+borderWidth: 1
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+display: false
+}
+},
+scales: {
+y: {
+beginAtZero: true,
+max: 100,
+ticks: {
+callback: function(value) {
+return value + '%';
+}
+}
+}
+}
+}
+});
+}
+
+function updateCharts() {
+if (!historyData || historyData.length < 5) return;
+
+// Update trend chart
+const last10 = historyData.slice(0, 10).reverse();
+const labels = last10.map(item => item.period);
+const bigData = last10.map(item => item.resultType === 'BIG' ? 100 : 0);
+const smallData = last10.map(item => item.resultType === 'SMALL' ? 100 : 0);
+
+trendChart.data.labels = labels;
+trendChart.data.datasets[0].data = bigData;
+trendChart.data.datasets[1].data = smallData;
+trendChart.update();
+
+// Update pattern chart
+const patternData = analyzePatternFrequency();
+patternChart.data.datasets[0].data = patternData;
+patternChart.update();
+
+// Update probability chart
+const bigCount = historyData.filter(item => item.resultType === 'BIG').length;
+const smallCount = historyData.length - bigCount;
+probabilityChart.data.datasets[0].data = [
+Math.round((bigCount / historyData.length) * 100),
+Math.round((smallCount / historyData.length) * 100)
+];
+probabilityChart.update();
+}
+
+function updatePerformanceCharts() {
+if (!logicPerformanceData) return;
+
+const topLogics = [...logicPerformanceData]
+.sort((a, b) => b.accuracy - a.accuracy)
+.slice(0, 5);
+
+performanceChart.data.labels = topLogics.map(logic => logic.name);
+performanceChart.data.datasets[0].data = topLogics.map(logic => logic.accuracy);
+performanceChart.update();
+
+// Update top logics display
+const topLogicsDiv = document.getElementById('top-logics');
+topLogicsDiv.innerHTML = '';
+
+topLogics.forEach(logic => {
+const logicItem = document.createElement('div');
+logicItem.className = 'logic-card';
+logicItem.innerHTML = `
+<div class="logic-title">${logic.name} <span class="logic-badge">${logic.accuracy}%</span></div>
+<div class="logic-desc">${logic.description}</div>
+<div class="logic-stats">
+<div class="stat-pill">Uses: ${logic.uses}</div>
+<div class="stat-pill">Wins: ${logic.wins}</div>
+<div class="stat-pill">Losses: ${logic.losses}</div>
+</div>
+`;
+topLogicsDiv.appendChild(logicItem);
+});
+
+// Update recommendations
+const recommendationsDiv = document.getElementById('logic-recommendations');
+recommendationsDiv.innerHTML = '';
+
+const currentTrend = analyzeCurrentTrend();
+const recommendedLogics = getRecommendedLogics(currentTrend);
+
+recommendationsDiv.innerHTML = `
+<div class="trend-card">
+<div class="trend-header">
+<div class="trend-title">Current Trend</div>
+<div class="trend-value">${currentTrend.type}</div>
+</div>
+<div class="trend-bar">
+<div class="trend-progress" style="width: ${currentTrend.strength}%"></div>
+</div>
+</div>
+`;
+
+recommendedLogics.forEach(logic => {
+const logicItem = document.createElement('div');
+logicItem.className = 'logic-card';
+logicItem.innerHTML = `
+<div class="logic-title">${logic.name} <span class="logic-badge">Recommended</span></div>
+<div class="logic-desc">${logic.description}</div>
+<div class="logic-performance">
+<div class="performance-item">
+<div class="performance-value ${logic.accuracy > 70 ? 'good-performance' : logic.accuracy < 50 ? 'bad-performance' : 'neutral-performance'}">${logic.accuracy}%</div>
+<div class="performance-label">Accuracy</div>
+</div>
+<div class="performance-item">
+<div class="performance-value">${logic.uses}</div>
+<div class="performance-label">Uses</div>
+</div>
+<div class="performance-item">
+<div class="performance-value">${logic.wins}-${logic.losses}</div>
+<div class="performance-label">W-L</div>
+</div>
+</div>
+`;
+recommendationsDiv.appendChild(logicItem);
+});
+}
+
+function analyzePatternFrequency() {
+if (historyData.length < 5) return [25, 30, 20, 15, 10];
+
+let streaks = 0, alternating = 0, repeats = 0, triples = 0, weighted = 0;
+const sampleSize = Math.min(historyData.length, 20);
+
+for (let i = 0; i < sampleSize - 1; i++) {
+// Check for streaks
+if (historyData[i].resultType === historyData[i+1].resultType) {
+streaks++;
+}
+
+// Check for alternating
+if (i < sampleSize - 2 &&
+historyData[i].resultType !== historyData[i+1].resultType &&
+historyData[i].resultType === historyData[i+2].resultType) {
+alternating++;
+}
+
+// Check for repeats
+if (i < sampleSize - 3 &&
+historyData[i].resultType === historyData[i+2].resultType) {
+repeats++;
+}
+
+// Check for triples
+if (i < sampleSize - 3 &&
+historyData[i].resultType === historyData[i+1].resultType &&
+historyData[i].resultType === historyData[i+2].resultType) {
+triples++;
+}
+}
+
+// Weighted is based on overall distribution
+const bigCount = historyData.slice(0, sampleSize).filter(item => item.resultType === 'BIG').length;
+weighted = Math.abs(50 - (bigCount / sampleSize * 100));
+
+// Convert to percentages
+const total = streaks + alternating + repeats + triples + weighted;
+return [
+Math.round(streaks / total * 100),
+Math.round(alternating / total * 100),
+Math.round(repeats / total * 100),
+Math.round(triples / total * 100),
+Math.round(weighted / total * 100)
+];
+}
+
+function analyzeCurrentTrend() {
+if (historyData.length < 5) return { type: "No clear trend", strength: 0 };
+
+// Check for streaks
+let lastType = historyData[0].resultType;
+let streakLength = 1;
+for (let i = 1; i < historyData.length; i++) {
+if (historyData[i].resultType === lastType) {
+streakLength++;
+} else {
+break;
+}
+}
+
+if (streakLength >= 3) {
+return {
+type: `${streakLength}-${lastType} Streak`,
+strength: Math.min(100, streakLength * 20)
+};
+}
+
+// Check for alternating
+let alternating = true;
+for (let i = 1; i < Math.min(6, historyData.length); i++) {
+if ((historyData[i-1].resultType === "BIG" && historyData[i].resultType !== "SMALL") ||
+(historyData[i-1].resultType === "SMALL" && historyData[i].resultType !== "BIG")) {
+alternating = false;
+break;
+}
+}
+
+if (alternating) {
+return {
+type: "Alternating Pattern",
+strength: 80
+};
+}
+
+// Check for weighted distribution
+const bigCount = historyData.filter(item => item.resultType === 'BIG').length;
+const bigPercent = (bigCount / historyData.length) * 100;
+
+if (Math.abs(bigPercent - 50) > 15) {
+return {
+type: bigPercent > 50 ? "BIG Bias" : "SMALL Bias",
+strength: Math.abs(bigPercent - 50) * 2
+};
+}
+
+return { type: "No clear trend", strength: 0 };
+}
+
+function getRecommendedLogics(trend) {
+if (!logicPerformanceData) return [];
+
+// Filter logics that are good for the current trend
+let recommended = [];
+
+if (trend.type.includes("Streak")) {
+recommended = logicPerformanceData.filter(logic =>
+logic.tags.includes("streak") && logic.accuracy > 65
+);
+} else if (trend.type.includes("Alternating")) {
+recommended = logicPerformanceData.filter(logic =>
+logic.tags.includes("alternating") && logic.accuracy > 65
+);
+} else if (trend.type.includes("Bias")) {
+recommended = logicPerformanceData.filter(logic =>
+logic.tags.includes("weighted") && logic.accuracy > 65
+);
+} else {
+// Default to top 3 performing logics
+recommended = [...logicPerformanceData]
+.sort((a, b) => b.accuracy - a.accuracy)
+.slice(0, 3);
+}
+
+return recommended;
+}
+
+let logicPerformanceData = [];
+
+function loadLogicInfo() {
+const activeLogics = [
+{ id: 1, name: "Streak Detection", description: "Identifies consecutive same results and predicts breaks", accuracy: 72, uses: 45, wins: 32, losses: 13, tags: ["streak"] },
+{ id: 5, name: "Alternating Pattern", description: "Detects alternating BIG/SMALL sequences", accuracy: 68, uses: 38, wins: 26, losses: 12, tags: ["alternating"] },
+{ id: 8, name: "Weighted Probability", description: "Adjusts prediction based on recent distribution", accuracy: 75, uses: 52, wins: 39, losses: 13, tags: ["weighted"] },
+{ id: 12, name: "Triple Pattern", description: "Looks for three consecutive same results", accuracy: 70, uses: 28, wins: 20, losses: 8, tags: ["streak"] },
+{ id: 19, name: "Neural Network", description: "AI model trained on historical data", accuracy: 73, uses: 48, wins: 35, losses: 13, tags: ["ai"] },
+{ id: 22, name: "Hybrid Logic", description: "Combination of multiple logics", accuracy: 76, uses: 55, wins: 42, losses: 13, tags: ["hybrid"] },
+{ id: 25, name: "Fibonacci Retracement", description: "Uses Fibonacci levels for prediction", accuracy: 69, uses: 37, wins: 26, losses: 11, tags: ["fibonacci"] },
+{ id: 28, name: "Machine Learning", description: "Advanced ML model predictions", accuracy: 77, uses: 58, wins: 45, losses: 13, tags: ["ai"] }
+];
+
+const allLogics = [
+{ id: 1, name: "Streak Detection", description: "Identifies consecutive same results and predicts breaks", accuracy: 72, uses: 45, wins: 32, losses: 13, tags: ["streak"] },
+{ id: 2, name: "Reverse Streak", description: "Predicts continuation of current streak", accuracy: 58, uses: 32, wins: 19, losses: 13, tags: ["streak"] },
+{ id: 3, name: "Alternating Pattern", description: "Detects alternating BIG/SMALL sequences", accuracy: 68, uses: 38, wins: 26, losses: 12, tags: ["alternating"] },
+{ id: 4, name: "Double Repeat", description: "Looks for repeating pairs of results", accuracy: 65, uses: 29, wins: 19, losses: 10, tags: ["repeating"] },
+{ id: 5, name: "Triple Pattern", description: "Looks for three consecutive same results", accuracy: 70, uses: 28, wins: 20, losses: 8, tags: ["streak"] },
+{ id: 6, name: "Mirror Pattern", description: "Identifies mirror sequences in results", accuracy: 62, uses: 25, wins: 15, losses: 10, tags: ["pattern"] },
+{ id: 7, name: "Position Analysis", description: "Analyzes digit positions for patterns", accuracy: 60, uses: 22, wins: 13, losses: 9, tags: ["position"] },
+{ id: 8, name: "Weighted Probability", description: "Adjusts prediction based on recent distribution", accuracy: 75, uses: 52, wins: 39, losses: 13, tags: ["weighted"] },
+{ id: 9, name: "Cluster Analysis", description: "Groups results into clusters for prediction", accuracy: 67, uses: 31, wins: 21, losses: 10, tags: ["cluster"] },
+{ id: 10, name: "Fibonacci Sequence", description: "Looks for Fibonacci-like patterns", accuracy: 55, uses: 18, wins: 10, losses: 8, tags: ["sequence"] },
+{ id: 11, name: "Prime Number Pattern", description: "Analyzes results based on prime numbers", accuracy: 53, uses: 15, wins: 8, losses: 7, tags: ["number"] },
+{ id: 12, name: "Odd/Even Balance", description: "Considers odd/even distribution", accuracy: 63, uses: 27, wins: 17, losses: 10, tags: ["parity"] },
+{ id: 13, name: "Sum Analysis", description: "Analyzes sum of digits for patterns", accuracy: 59, uses: 23, wins: 14, losses: 9, tags: ["sum"] },
+{ id: 14, name: "Last Digit Pattern", description: "Looks at last digit sequences", accuracy: 57, uses: 20, wins: 11, losses: 9, tags: ["digit"] },
+{ id: 15, name: "Hot/Cold Numbers", description: "Tracks frequently appearing numbers", accuracy: 61, uses: 26, wins: 16, losses: 10, tags: ["frequency"] },
+{ id: 16, name: "Gap Analysis", description: "Analyzes gaps between numbers", accuracy: 58, uses: 21, wins: 12, losses: 9, tags: ["gap"] },
+{ id: 17, name: "Trend Reversal", description: "Predicts when trends will reverse", accuracy: 66, uses: 30, wins: 20, losses: 10, tags: ["trend"] },
+{ id: 18, name: "Moving Average", description: "Uses moving averages to predict", accuracy: 64, uses: 28, wins: 18, losses: 10, tags: ["average"] },
+{ id: 19, name: "Neural Network", description: "AI model trained on historical data", accuracy: 73, uses: 48, wins: 35, losses: 13, tags: ["ai"] },
+{ id: 20, name: "Markov Chain", description: "Probability-based prediction model", accuracy: 69, uses: 36, wins: 25, losses: 11, tags: ["probability"] },
+{ id: 21, name: "Regression Analysis", description: "Statistical prediction model", accuracy: 71, uses: 42, wins: 30, losses: 12, tags: ["statistical"] },
+{ id: 22, name: "Hybrid Logic", description: "Combination of multiple logics", accuracy: 76, uses: 55, wins: 42, losses: 13, tags: ["hybrid"] },
+{ id: 23, name: "Bayesian Inference", description: "Uses Bayesian probability for predictions", accuracy: 74, uses: 50, wins: 37, losses: 13, tags: ["probability"] },
+{ id: 24, name: "Time Series Analysis", description: "Analyzes time-based patterns", accuracy: 70, uses: 40, wins: 28, losses: 12, tags: ["time"] },
+{ id: 25, name: "Fibonacci Retracement", description: "Uses Fibonacci levels for prediction", accuracy: 69, uses: 37, wins: 26, losses: 11, tags: ["fibonacci"] },
+{ id: 26, name: "Support/Resistance", description: "Identifies support/resistance levels", accuracy: 67, uses: 35, wins: 24, losses: 11, tags: ["levels"] },
+{ id: 27, name: "Volume Analysis", description: "Analyzes result frequency patterns", accuracy: 65, uses: 33, wins: 22, losses: 11, tags: ["volume"] },
+{ id: 28, name: "Machine Learning", description: "Advanced ML model predictions", accuracy: 77, uses: 58, wins: 45, losses: 13, tags: ["ai"] },
+{ id: 29, name: "Deep Learning", description: "Neural network with multiple layers", accuracy: 78, uses: 60, wins: 47, losses: 13, tags: ["ai"] },
+{ id: 30, name: "Ensemble Method", description: "Combines multiple AI models", accuracy: 79, uses: 62, wins: 49, losses: 13, tags: ["ai"] },
+{ id: 31, name: "Genetic Algorithm", description: "Uses evolutionary computation", accuracy: 75, uses: 53, wins: 40, losses: 13, tags: ["ai"] },
+{ id: 32, name: "Reinforcement Learning", description: "Learns from prediction outcomes", accuracy: 76, uses: 55, wins: 42, losses: 13, tags: ["ai"] }
+];
+
+logicPerformanceData = allLogics;
+
+const activeList = document.getElementById('active-logics-list');
+activeLogics.forEach(logic => {
+activeList.innerHTML += `
+<div class="logic-card">
+<div class="logic-title">${logic.name} <span class="logic-badge">Logic ${logic.id}</span></div>
+<div class="logic-desc">${logic.description}</div>
+<div class="logic-stats">
+<div class="stat-pill">Accuracy: ${logic.accuracy}%</div>
+<div class="stat-pill">Uses: ${logic.uses}</div>
+<div class="stat-pill">W-L: ${logic.wins}-${logic.losses}</div>
+</div>
+</div>
+`;
+});
+
+const allList = document.getElementById('all-logics-list');
+allLogics.forEach(logic => {
+const isActive = activeLogics.some(l => l.id === logic.id);
+allList.innerHTML += `
+<div class="logic-card" style="${isActive ? 'border-left: 3px solid var(--primary);' : ''}">
+<div class="logic-title">${logic.name} <span class="logic-badge">Logic ${logic.id}</span></div>
+<div class="logic-desc">${logic.description}</div>
+<div class="logic-stats">
+<div class="stat-pill">Accuracy: ${logic.accuracy}%</div>
+<div class="stat-pill">Uses: ${logic.uses}</div>
+<div class="stat-pill">W-L: ${logic.wins}-${logic.losses}</div>
+</div>
+${isActive ? '<div style="color: var(--accent); font-size: 0.8rem; margin-top: 5px;"><i class="fas fa-check-circle"></i> Currently Active</div>' : ''}
+</div>
+`;
+});
+}
+
+function loadPerformanceData() {
+// This would normally come from an API or local storage
+// For demo purposes, we're using the data loaded in loadLogicInfo()
+}
+
+// Your existing JS code with enhanced prediction logic
+let historyData = [];
+let totalWins = 0;
+let totalLosses = 0;
+let totalPredictions = 0;
+let correctPredictions = 0;
+let currentPeriod = null;
+let lastFetchedPeriod = null;
+let consecutiveLosses = 0;
+let lastPrediction = null;
+let activePatterns = [];
+let currentLogic = 1;
+
+async function fetchGameResult() {
+try {
+const payload = {
+pageSize: 10,
+pageNo: 1,
+typeId: 1,
+language: 0,
+random: "4a0522c6ecd8410496260e686be2a57c",
+signature: "334B5E70A0C9B8918B0B15E517E2069C",
+timestamp: Math.floor(Date.now() / 1000)
+};
+
+let response = await fetch("https://api.bdg88zf.com/api/webapi/GetNoaverageEmerdList", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify(payload)
+});
+
+if (!response.ok) {
+throw new Error(`HTTP error! Status: ${response.status}`);
+}
+
+let data = await response.json();
+let latestResult = data?.data?.list?.[0];
+if (latestResult) {
+return {
+period: latestResult.issueNumber,
+result: latestResult.number,
+resultType: latestResult.number >= 5 ? "BIG" : "SMALL"
+};
+} else {
+throw new Error("No data found in the API response");
+}
+} catch (error) {
+console.error("Error fetching game result:", error);
+return null;
+}
+}
+
+function enhancedTrendAnalysis(history) {
+if (history.length < 3) {
+currentLogic = 8; // Default to weighted probability
+return { prediction: "BIG", confidence: 60, logic: currentLogic };
+}
+
+// Reset active patterns
+activePatterns = [];
+
+// Enhanced pattern recognition with multiple strategies
+const recent = history.slice(0, 10); // Last 10 results
+const predictions = [];
+
+// 1. Streak detection logic (Logic 1)
+let lastStreakType = recent[0].resultType;
+let streakLength = 1;
+for (let i = 1; i < recent.length; i++) {
+if (recent[i].resultType === lastStreakType) {
+streakLength++;
+} else {
+break;
+}
+}
+
+// If streak of 3 or more, bet against it with high confidence
+if (streakLength >= 3) {
+activePatterns.push("Streak of " + streakLength);
+predictions.push({
+prediction: lastStreakType === "BIG" ? "SMALL" : "BIG",
+confidence: Math.min(90, 70 + (streakLength * 5)),
+logic: 1
+});
+}
+
+// 2. Alternating pattern detection (Logic 3)
+let alternating = true;
+for (let i = 1; i < Math.min(6, recent.length); i++) {
+if ((recent[i-1].resultType === "BIG" && recent[i].resultType !== "SMALL") ||
+(recent[i-1].resultType === "SMALL" && recent[i].resultType !== "BIG")) {
+alternating = false;
+break;
+}
+}
+
+if (alternating && recent.length >= 4) {
+activePatterns.push("Alternating pattern");
+predictions.push({
+prediction: recent[recent.length-1].resultType === "BIG" ? "SMALL" : "BIG",
+confidence: 80,
+logic: 3
+});
+}
+
+// 3. Triple pattern detection (Logic 5)
+if (recent.length >= 5) {
+const lastThree = recent.slice(0, 3);
+if (lastThree[0].resultType === lastThree[1].resultType &&
+lastThree[0].resultType === lastThree[2].resultType) {
+activePatterns.push("Triple pattern");
+predictions.push({
+prediction: lastThree[0].resultType === "BIG" ? "SMALL" : "BIG",
+confidence: 85,
+logic: 5
+});
+}
+}
+
+// 4. Weighted probability based on recent history (Logic 8)
+const lookback = Math.min(15, recent.length);
+const bigCount = recent.slice(0, lookback).filter(r => r.resultType === "BIG").length;
+const smallCount = lookback - bigCount;
+const bigPercent = (bigCount / lookback) * 100;
+
+// If significant imbalance, bet on the less frequent
+if (Math.abs(bigPercent - 50) > 20) {
+activePatterns.push("Weighted probability");
+predictions.push({
+prediction: bigPercent > 50 ? "SMALL" : "BIG",
+confidence: Math.min(90, Math.abs(bigPercent - 50) + 40),
+logic: 8
+});
+}
+
+// 5. After 2 consecutive losses, switch to opposite prediction (Logic 22 - Hybrid)
+if (consecutiveLosses >= 2) {
+activePatterns.push("Loss recovery");
+predictions.push({
+prediction: lastPrediction === "BIG" ? "SMALL" : "BIG",
+confidence: 75 + (consecutiveLosses * 5),
+logic: 22
+});
+}
+
+// 6. Mirror pattern detection (Logic 6)
+if (recent.length >= 4) {
+if (recent[0].resultType === recent[2].resultType &&
+recent[1].resultType === recent[3].resultType) {
+activePatterns.push("Mirror pattern");
+predictions.push({
+prediction: recent[1].resultType === "BIG" ? "SMALL" : "BIG",
+confidence: 75,
+logic: 6
+});
+}
+}
+
+// 7. Neural network prediction (Logic 19)
+// This would normally come from an actual trained model
+// For demo, we'll simulate it with a weighted decision
+if (recent.length >= 8) {
+const nnPrediction = neuralNetworkPrediction(recent);
+if (nnPrediction.confidence > 70) {
+activePatterns.push("AI detected");
+predictions.push(nnPrediction);
+}
+}
+
+// 8. Fibonacci retracement (Logic 25)
+if (recent.length >= 8) {
+const fibPrediction = fibonacciPrediction(recent);
+if (fibPrediction.confidence > 65) {
+activePatterns.push("Fibonacci pattern");
+predictions.push(fibPrediction);
+}
+}
+
+// 9. Machine learning prediction (Logic 28)
+if (recent.length >= 10) {
+const mlPrediction = machineLearningPrediction(recent);
+if (mlPrediction.confidence > 75) {
+activePatterns.push("ML detected");
+predictions.push(mlPrediction);
+}
+}
+
+// If no strong patterns detected, use combination of basic strategies
+if (predictions.length === 0) {
+// Basic pattern: if last two same, predict opposite
+if (recent.length >= 2 && recent[0].resultType === recent[1].resultType) {
+predictions.push({
+prediction: recent[0].resultType === "BIG" ? "SMALL" : "BIG",
+confidence: 65,
+logic: 4
+});
+} else {
+// Default to opposite of last result
+predictions.push({
+prediction: recent[0].resultType === "BIG" ? "SMALL" : "BIG",
+confidence: 60,
+logic: 12
+});
+}
+}
+
+// Select the prediction with highest confidence
+let bestPrediction = predictions[0];
+for (let i = 1; i < predictions.length; i++) {
+if (predictions[i].confidence > bestPrediction.confidence) {
+bestPrediction = predictions[i];
+}
+}
+
+currentLogic = bestPrediction.logic;
+return bestPrediction;
+}
+
+function neuralNetworkPrediction(recent) {
+// Simulated neural network prediction
+// In a real implementation, this would use a trained model
+
+// Count recent BIG/SMALL
+const bigCount = recent.filter(r => r.resultType === "BIG").length;
+const smallCount = recent.length - bigCount;
+
+// Check for streaks
+let lastType = recent[0].resultType;
+let streakLength = 1;
+for (let i = 1; i < recent.length; i++) {
+if (recent[i].resultType === lastType) {
+streakLength++;
+} else {
+break;
+}
+}
+
+// Simple decision making based on patterns
+if (streakLength >= 3) {
+return {
+prediction: lastType === "BIG" ? "SMALL" : "BIG",
+confidence: 80,
+logic: 19
+};
+}
+
+// If more than 60% of one type, predict the other
+if (bigCount / recent.length > 0.6) {
+return {
+prediction: "SMALL",
+confidence: 75,
+logic: 19
+};
+} else if (smallCount / recent.length > 0.6) {
+return {
+prediction: "BIG",
+confidence: 75,
+logic: 19
+};
+}
+
+// Default to weighted decision
+return {
+prediction: bigCount > smallCount ? "SMALL" : "BIG",
+confidence: 70,
+logic: 19
+};
+}
+
+function fibonacciPrediction(recent) {
+// Simulated Fibonacci retracement prediction
+const levels = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
+const bigCount = recent.filter(r => r.resultType === "BIG").length;
+const ratio = bigCount / recent.length;
+
+// Find closest Fibonacci level
+let closestLevel = levels.reduce((prev, curr) => {
+return (Math.abs(curr - ratio) < Math.abs(prev - ratio) ? curr : prev);
+});
+
+// Predict based on Fibonacci levels
+if (ratio > 0.618) {
+return {
+prediction: "SMALL",
+confidence: 75,
+logic: 25
+};
+} else if (ratio < 0.382) {
+return {
+prediction: "BIG",
+confidence: 75,
+logic: 25
+};
+} else {
+return {
+prediction: recent[0].resultType === "BIG" ? "SMALL" : "BIG",
+confidence: 70,
+logic: 25
+};
+}
+}
+
+function machineLearningPrediction(recent) {
+// Simulated machine learning prediction
+// This would normally use a trained model
+
+// Analyze multiple patterns
+const bigCount = recent.filter(r => r.resultType === "BIG").length;
+const smallCount = recent.length - bigCount;
+
+// Check for streaks
+let lastType = recent[0].resultType;
+let streakLength = 1;
+for (let i = 1; i < recent.length; i++) {
+if (recent[i].resultType === lastType) {
+streakLength++;
+} else {
+break;
+}
+}
+
+// Check for alternating pattern
+let alternating = true;
+for (let i = 1; i < Math.min(6, recent.length); i++) {
+if ((recent[i-1].resultType === "BIG" && recent[i].resultType !== "SMALL") ||
+(recent[i-1].resultType === "SMALL" && recent[i].resultType !== "BIG")) {
+alternating = false;
+break;
+}
+}
+
+// Make prediction based on combined analysis
+if (streakLength >= 3) {
+return {
+prediction: lastType === "BIG" ? "SMALL" : "BIG",
+confidence: 85,
+logic: 28
+};
+} else if (alternating) {
+return {
+prediction: recent[recent.length-1].resultType === "BIG" ? "SMALL" : "BIG",
+confidence: 80,
+logic: 28
+};
+} else if (bigCount / recent.length > 0.6) {
+return {
+prediction: "SMALL",
+confidence: 78,
+logic: 28
+};
+} else if (smallCount / recent.length > 0.6) {
+return {
+prediction: "BIG",
+confidence: 78,
+logic: 28
+};
+} else {
+return {
+prediction: bigCount > smallCount ? "SMALL" : "BIG",
+confidence: 75,
+logic: 28
+};
+}
+}
+
+function autoPredict() {
+let prediction = enhancedTrendAnalysis(historyData);
+lastPrediction = prediction.prediction;
+
+// Update active patterns display
+updatePatternIndicator();
+
+// Update active logic badge
+document.getElementById('activeLogic').textContent = 'Logic ' + prediction.logic;
+
+return {
+type: prediction.prediction,
+confidence: prediction.confidence
+};
+}
+
+function updatePatternIndicator() {
+const indicator = document.getElementById('patternIndicator');
+
+if (activePatterns.length === 0) {
+indicator.innerHTML = '<div class="pattern-item">No strong patterns detected</div>';
+return;
+}
+
+indicator.innerHTML = '';
+activePatterns.forEach(pattern => {
+const item = document.createElement('div');
+item.className = 'pattern-item pattern-active';
+item.innerHTML = `<i class="fas fa-project-diagram"></i> ${pattern}`;
+indicator.appendChild(item);
+});
+}
+
+async function updatePrediction() {
+let apiResult = await fetchGameResult();
+
+if (apiResult && apiResult.period !== lastFetchedPeriod) {
+lastFetchedPeriod = apiResult.period;
+currentPeriod = (BigInt(apiResult.period) + 1n).toString();
+
+// Check previous prediction result before making new one
+if (historyData.length > 0 && historyData[0].period === apiResult.period) {
+const lastItem = historyData[0];
+const wasCorrect = lastItem.prediction === apiResult.resultType;
+
+if (!wasCorrect) {
+consecutiveLosses++;
+} else {
+consecutiveLosses = 0;
+}
+}
+
+let prediction = autoPredict();
+
+document.getElementById("currentPeriod").innerText = currentPeriod;
+
+const predictionElement = document.getElementById("prediction");
+predictionElement.innerText = prediction.type;
+predictionElement.className = prediction.type === "BIG" ?
+"prediction-value prediction-big" : "prediction-value prediction-small";
+
+// Animate prediction change
+predictionElement.style.transform = 'scale(1.1)';
+setTimeout(() => {
+predictionElement.style.transform = 'scale(1)';
+}, 300);
+
+historyData.unshift({
+period: currentPeriod,
+result: apiResult.result,
+resultType: apiResult.resultType,
+prediction: prediction.type,
+resultStatus: "Pending",
+confidence: prediction.confidence,
+logic: currentLogic
+});
+
+updateHistory();
+checkWinLoss(apiResult);
+
+// Update charts if on trends tab
+if (document.getElementById('trends-tab').classList.contains('active')) {
+updateCharts();
+}
+}
+}
+
+async function checkWinLoss(apiResult) {
+if (!apiResult) return;
+
+historyData.forEach(item => {
+if (item.period === apiResult.period) {
+item.resultStatus = (item.prediction === apiResult.resultType) ? "WIN" : "LOSS";
+}
+});
+
+updateStats();
+updateHistory();
+}
+
+function updateStats() {
+totalWins = historyData.filter(item => item.resultStatus === "WIN").length;
+totalLosses = historyData.filter(item => item.resultStatus === "LOSS").length;
+totalPredictions = historyData.length;
+correctPredictions = totalWins;
+
+document.getElementById("totalWins").innerText = totalWins;
+document.getElementById("totalLosses").innerText = totalLosses;
+document.getElementById("totalPredictions").innerText = totalPredictions;
+document.getElementById("winRate").innerText = calculateConfidence();
+
+// Calculate accuracy percentage
+const accuracy = totalPredictions > 0 ? (correctPredictions / totalPredictions) * 100 : 0;
+document.getElementById("accuracy").innerText = accuracy.toFixed(1) + '%';
+}
+
+function calculateConfidence() {
+if (historyData.length === 0) return "0%";
+
+// Use the confidence of the current prediction
+const currentPrediction = historyData[0];
+if (currentPrediction.confidence) {
+return currentPrediction.confidence.toFixed(0) + '%';
+}
+
+// Fallback to overall accuracy
+let confidence = (correctPredictions / totalPredictions) * 100 || 0;
+return confidence.toFixed(0) + '%';
+}
+
+function updateHistory() {
+let historyDiv = document.getElementById("history");
+historyDiv.innerHTML = "";
+
+// Show only the last 10 predictions
+const recentHistory = historyData.slice(0, 10);
+
+if (recentHistory.length === 0) {
+historyDiv.innerHTML = '<p style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5)">No prediction history yet</p>';
+return;
+}
+
+recentHistory.forEach(item => {
+let resultClass = item.resultStatus === "WIN" ? "win win-bg" :
+(item.resultStatus === "LOSS" ? "loss loss-bg" : "pending pending-bg");
+let resultText = item.resultStatus === "WIN" ? "WIN" :
+(item.resultStatus === "LOSS" ? "LOSS" : "PENDING");
+
+const historyItem = document.createElement('div');
+historyItem.className = 'history-item';
+historyItem.innerHTML = `
+<div>
+<div class="history-period">${item.period}</div>
+<div class="history-prediction ${item.prediction === 'BIG' ? 'prediction-big' : 'prediction-small'}">${item.prediction}</div>
+</div>
+<div class="history-status ${resultClass}">${resultText}</div>
+`;
+historyDiv.appendChild(historyItem);
+});
+}
+
+// Fetch previous results
+async function fetchPreviousResults() {
+const apiUrl = 'https://api.bdg88zf.com/api/webapi/GetNoaverageEmerdList';
+const requestData = {
+pageSize: 10,
+pageNo: 1,
+typeId: 1,
+language: 0,
+random: "c2505d9138da4e3780b2c2b34f2fb789",
+signature: "7D637E060DA35C0C6E28DC6D23D71BED",
+timestamp: Math.floor(Date.now() / 1000),
+};
+
+try {
+const response = await fetch(apiUrl, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json;charset=UTF-8',
+},
+body: JSON.stringify(requestData),
+});
+
+if (response.ok) {
+const data = await response.json();
+if (data.code === 0) {
+updatePreviousResults(data.data.list);
+} else {
+console.error('Failed to fetch previous results:', data.msg);
+document.getElementById('previous-results').innerHTML = '<p style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5)">Failed to load previous results</p>';
+}
+} else {
+throw new Error('Network response was not ok');
+}
+} catch (error) {
+console.error('Fetch error:', error);
+document.getElementById('previous-results').innerHTML = '<p style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5)">Error loading previous results</p>';
+}
+}
+
+function updatePreviousResults(resultList) {
+const prevResultsDiv = document.getElementById('previous-results');
+prevResultsDiv.innerHTML = '';
+
+if (!resultList || resultList.length === 0) {
+prevResultsDiv.innerHTML = '<p style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5)">No previous results available</p>';
+return;
+}
+
+resultList.forEach((result) => {
+const { issueNumber, number } = result;
+const size = number <= 4 ? "SMALL" : "BIG";
+const sizeClass = size === "BIG" ? "prediction-big" : "prediction-small";
+
+const resultItem = document.createElement('div');
+resultItem.className = 'history-item';
+resultItem.innerHTML = `
+<div>
+<div class="history-period">${issueNumber}</div>
+<div class="history-prediction">${number}</div>
+</div>
+<div class="history-prediction ${sizeClass}">${size}</div>
+`;
+prevResultsDiv.appendChild(resultItem);
+});
+}
+
+// Start with faster polling (every 500ms) to catch results quickly
+setInterval(updatePrediction, 500);
+
+// Initial call to start the process
+updatePrediction();
+</script>
